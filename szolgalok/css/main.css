@@ -1,0 +1,18 @@
+#msg {
+    position: absolute;
+    bottom: 0;
+}
+
+#debug {
+    background-color: lightgray;
+    color: black;
+    font-size: .8em;
+    position: absolute;
+    bottom: 0;
+    display: none;
+}
+
+.description {
+    font-size: small;
+    color: darkorange;
+}
