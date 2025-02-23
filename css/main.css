@@ -16,3 +16,15 @@
     font-size: small;
     color: darkorange;
 }
+
+td.stat-lejart {
+    background-color: chocolate;
+}
+
+td.stat-aktiv {
+    background-color: chartreuse;
+}
+
+td.stat-inaktiv {
+    background-color: yellow;
+}

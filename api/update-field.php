@@ -1,22 +1,20 @@
 <?php
-	//include connection file 
-	include_once("../connection.php");
+	include_once('../connection.php');
 
-	$event_id = $_POST['event'];
-	$field = $_POST['field'];
-	$value = $_POST['value'];
-	date_default_timezone_set('Europe/Budapest');
-	$date = date('Y.m.d H:i:s', time());
-	$message = $date.': '.$value;
+	$id = htmlspecialchars($_POST['id']);
+	$name = htmlspecialchars($_POST['name']);
+	$short_name = htmlspecialchars($_POST['short_name']);
+	$url = htmlspecialchars($_POST['url']);
+	$valid_from = htmlspecialchars($_POST['valid_from']);
+	$valid_to = htmlspecialchars($_POST['valid_to']);
 
-	$sql = "SELECT id FROM event_fields WHERE event_id = $event_id and field = '$field'";
-	$res = mysqli_query($conn, $sql);		
-	$row = mysqli_fetch_all($res, MYSQLI_ASSOC);
+	$sql = "SELECT 1 from url where id = '$id'";
+	$res = mysqli_fetch_all(mysqli_query($conn, $sql));
 
-	if($row) {
-		$sql = "UPDATE event_fields SET value = '$value', log = concat(log, '\n', '$message') WHERE event_id = $event_id and field = '$field'";
+	if ($res) {
+		$sql = "UPDATE url SET name='$name', short_name='$short_name', url='$url', valid_from='$valid_from', valid_to='$valid_to' where id='$id'";
 	} else {
-		$sql = "INSERT INTO event_fields(event_id, field, value, log) VALUES ($event_id, '$field', '$value', '$message')";
+		$sql = "INSERT INTO url VALUES ('$id','$name','$short_name','$url','$valid_from','$valid_to')";
 	}
 	$status = mysqli_query($conn, $sql);
 
@@ -26,6 +24,5 @@
 		$msg = array('status' => $status, 'msg' => 'Nem sikerült elmenteni a módosítást.', 'sql' => $sql);
 	}
 
-	// send data as json format
 	echo json_encode($msg);
 ?>

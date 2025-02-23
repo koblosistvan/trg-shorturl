@@ -1,50 +1,57 @@
 $(document).ready(function() {
-	console.log('init');
-	$('td.edit-data').focus(function(){console.log("beleklixelt")});
+	$('td.edit-data').blur(function(){updateField(this);});
 
-	$('td.edit-data').blur(function(){console.log("kiklixelt")});
+	$('tr.edit-field').each(function() {
+
+		res = datecmp($(this).find('.tol').text(), $(this).find('.ig').text());
+		
+		col = $(this).find('[col="status"]');
+		col.addClass('stat-'+res);
+		if (res == 'aktiv') {
+			col.text('Aktív');
+		} else if (res == 'inaktiv') {
+			col.text('Jövőbeli');
+		} else {
+			col.text('Lejárt');
+		}
+		
+	});
 });
 
-function updateEvent(eventElem) {
+const DT = new Date();
+
+function updateField(elem) {
 	data = {};
-	eventRow = eventElem.closest('tr');
-	eventId = eventRow.getAttribute('data-row-id');
-	data['id'] = eventId;
-	data['date'] = document.getElementById('date-' + eventId).innerText;
-	data['description'] = document.getElementById('description-' + eventId).innerText;
-	
-	inputs = eventRow.getElementsByTagName("input");
-	views = [];
-	for (i = 0; i < inputs.length; i++) {
-        if(inputs[i].checked) {
-			views.push(inputs[i].getAttribute('col'));
-        }
-	}
-	data['views'] = views.join(',');
-	$.ajax( {   
-		type: "POST",  
-		url: "api/update-event.php",  
-		cache: false,       
+
+	elem = elem.closest('tr');
+
+	data['id'] = elem.getAttribute('data-row-id');
+
+	data['name'] = elem.querySelector('[col="name"]').innerText
+	data['short_name'] = elem.querySelector('[col="short_name"]').innerText
+	data['url'] = elem.querySelector('[col="url"]').innerText
+	data['valid_from'] = elem.querySelector('[col="valid_from"]').innerText
+	data['valid_to'] = elem.querySelector('[col="valid_to"]').innerText
+
+	$.ajax( {
+		type: "POST",
+		url: "api/update-field.php",
+		cache: false,
 		data: data,
 		dataType: "json",
-		success: function(response) {   
-			if(response.status) {
-				$("#msg").removeClass('alert-danger');
-				$("#msg").addClass('alert-success').html(response.msg);
+		success: function(response) {
+			if (response.status) {
+				$('#msg').removeClass('alertDanger');
+				$('#msg').addClass('alertSuccess').html(response.msg);
 			} else {
-				$("#msg").removeClass('alert-success');
-				$("#msg").addClass('alert-danger').html(response.msg);
+				$('#msg').removeClass('alertSuccess');
+				$('#msg').addClass('alertDanger').html(response.msg);
 			}
-		}   
+		}
 	} );
-}
 
-function updateField(dataElem) {
-	data = {};
-	data['event'] = dataElem.getAttribute('event');
-	data['field'] = dataElem.getAttribute('field');
-	data['value'] = dataElem.innerHTML;
-	
+	/*
+
 	$.ajax( {   
 		type: "POST",  
 		url: "api/update-field.php",  
@@ -61,28 +68,22 @@ function updateField(dataElem) {
 			}
 		}   
 	} );
+	
+	*/
 }
 
-function removeEvent(eventElem) {
-	if (window.confirm("Biztosan törölni szeretnéd?")) {
-		data = {};
-		data['id'] = $(eventElem).attr('data-row-id');
-		$.ajax( {   
-			type: "POST",
-			url: "api/remove-event.php",
-			cache: false,
-			data: data,
-			dataType: "json",
-			success: function(response) {
-				if(response.status) {
-					$("#msg").removeClass('alert-danger');
-					$("#msg").addClass('alert-success').html(response.msg);
-					$("#data-row-" + data['id']).remove();
-				} else {
-					$("#msg").removeClass('alert-success');
-					$("#msg").addClass('alert-danger').html(response.msg);
-				}
-			}
-		});
+function datecmp(tol,ig) {
+	t = DT.getTime();
+	tol = new Date(tol);
+	ig = new Date(ig);
+	tol = tol.getTime();
+	ig = ig.getTime();
+
+	if (tol <= t && t <= ig) {
+		return 'aktiv';
+	} else if (tol > t) {
+		return 'inaktiv'; // inaktiv = meg nem aktiv
+	} else {
+		return 'lejart';
 	}
 }
