@@ -1,9 +1,8 @@
 $(document).ready(function() {
-	$('td.edit-event').on('focusout', function() { updateEvent(this) } );
-  
-	$('td.edit-data').on('focusout', function() { updateField(this) } );
+	console.log('init');
+	$('td.edit-data').focus(function(){console.log("beleklixelt")});
 
-	$('img.remove-event').on('click', function() { removeEvent(this) });
+	$('td.edit-data').blur(function(){console.log("kiklixelt")});
 });
 
 function updateEvent(eventElem) {

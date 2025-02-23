@@ -1,10 +1,13 @@
 $(document).ready(function() {
+	console.log('init');
 	$('td.edit-event').on('focusout', function() { updateEvent(this) } );
   
 	$('td.edit-data').on('focusout', function() { updateField(this) } );
 
 	$('img.remove-event').on('click', function() { removeEvent(this) });
 });
+
+console.log('init');
 
 function updateEvent(eventElem) {
 	data = {};

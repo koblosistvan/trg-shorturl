@@ -1,14 +1,15 @@
-<html lang="hu">
+	<html lang="hu">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
 	<script type="text/javascript" src="js/jquery.bootgrid.min.js"></script>
 	<script type="text/javascript" src="js/script.js"></script>
+
 	<link rel="stylesheet" type="text/css" href="css/jquery.bootgrid.min.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
 	<link rel="stylesheet" type="text/css" href="css/main.css">
-	<title>Tatai Református Gyülekezet szolgálói beosztás</title>
+	<title>Trg Shorturl</title>
 </head>
 
 <body>
@@ -22,6 +23,13 @@ $res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
 
 $urls = mysqli_fetch_all($res, MYSQLI_ASSOC);
 var_dump($urls);
+
+/**
+ * duplikatok kezelese:
+ * ha a linkbol van olyan, ami aktiv, akkor REDIRECTEL
+ * kulonben ha a linkbol van olyan, ami aktiv lesz, azt irja ki hogy MEG NEM AKTIV
+ * kulonben ha a linkbol csak olyan van, ami inaktiv, azt irja ki, hogy MAR NEM AKTIV
+ */
 ?>
 	
 	<div class="container">
