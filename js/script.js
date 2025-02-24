@@ -9,7 +9,7 @@ $(document).ready(function() {
 		col.addClass('stat-'+res);
 		if (res == 'aktiv') {
 			col.text('Aktív');
-		} else if (res == 'inaktiv') {
+		} else if (res == 'jovobeli') {
 			col.text('Jövőbeli');
 		} else {
 			col.text('Lejárt');
@@ -73,16 +73,15 @@ function updateField(elem) {
 }
 
 function datecmp(tol,ig) {
-	t = DT.getTime();
+	t = (new Date(DT.toISOString().split('T')[0])).setHours(0); // alapvetoen 1AM-re allitja be
+
 	tol = new Date(tol);
 	ig = new Date(ig);
-	tol = tol.getTime();
-	ig = ig.getTime();
 
 	if (tol <= t && t <= ig) {
 		return 'aktiv';
 	} else if (tol > t) {
-		return 'inaktiv'; // inaktiv = meg nem aktiv
+		return 'jovobeli';
 	} else {
 		return 'lejart';
 	}
