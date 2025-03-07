@@ -2,10 +2,28 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<?php
+	include_once("connection.php");
+	var_dump($_GET);
+	if (isset($_GET['short_name'])) {
+		$sql = "SELECT * from url where short_name = '".$_GET['short_name']."'";
+		
 
-	<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>
-	<script type="text/javascript" src="js/jquery.bootgrid.min.js"></script>
-	<script type="text/javascript" src="js/script.js"></script>
+		$res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
+		$url = mysqli_fetch_all($res, MYSQLI_ASSOC);
+		var_dump($url);
+		echo '<meta http-equiv="refresh" content="0; url='.$url[0]['url'].'">';
+	} else {
+		echo '<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>';
+		echo '<script type="text/javascript" src="js/jquery.bootgrid.min.js"></script>';
+		echo '<script type="text/javascript" src="js/script.js"></script>';
+	}
+	// ha nincsen valasz akkor handle
+	// duplikatok order by
+
+	?>
+
+
 
 	<link rel="stylesheet" type="text/css" href="css/jquery.bootgrid.min.css">
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
@@ -18,7 +36,9 @@
 <div id="msg" class="alert"></div>
 
 <?php
-include_once("connection.php");
+
+
+
 $sql = "SELECT * FROM url";
 $res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
 

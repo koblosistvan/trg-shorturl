@@ -57,14 +57,14 @@ CREATE TABLE `url` (
 --
 
 -- tesztelos garbage data
-/*
+
 INSERT INTO `url` (`id`, `name`, `short_name`, `url`, `valid_from`, `valid_to`) VALUES
 (1, 'teszt', 'test23', 'https://youtu.be/J3cg4tFLm7A', '2021-03-14', '2071-07-01'),
 (2, 'pigai_peter_pigusz', 'piguszszsz', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '2025-02-22', '2025-02-27'),
 (3, 'gelbmann_bence', 'gelbiii', 'https://www.w3schools.com/sql/sql_insert.asp', '2025-02-20', '2025-02-28'),
 (4, 'kepes_botond', 'kepes', 'https://oltonyborze.tata-refi.hu/', '2025-03-20', '2025-12-21'),
 (5, 'nemtudom', 'nemtom', 'calculator://', '2019-02-01', '2020-02-01');
-*/
+
 
 --
 -- Indexek a kiírt táblákhoz
