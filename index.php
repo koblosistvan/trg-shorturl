@@ -4,34 +4,34 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<?php
 	include_once("connection.php");
-	var_dump($_GET);
+	//var_dump($_GET);
 	if (isset($_GET['short_name'])) {
-		$sql = "SELECT * from url where short_name = '".$_GET['short_name']."'";
+		$sql = "SELECT * from url_ordered where short_name = '".$_GET['short_name']."' limit 1";
 		
 
 		$res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
 		$url = mysqli_fetch_all($res, MYSQLI_ASSOC);
-		var_dump($url);
 		echo '<meta http-equiv="refresh" content="0; url='.$url[0]['url'].'">';
 	} else {
 		echo '<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>';
 		echo '<script type="text/javascript" src="js/jquery.bootgrid.min.js"></script>';
 		echo '<script type="text/javascript" src="js/script.js"></script>';
+		echo '<link rel="stylesheet" type="text/css" href="css/jquery.bootgrid.min.css">';
+		echo '<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>';
+		echo '<link rel="stylesheet" type="text/css" href="css/main.css">';
+	
 	}
 	// ha nincsen valasz akkor handle
 	// duplikatok order by
 
 	?>
-
-
-
-	<link rel="stylesheet" type="text/css" href="css/jquery.bootgrid.min.css">
-	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
-	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<title>Trg Shorturl</title>
 </head>
 
 <body>
+<?php
+//		var_dump($url);
+?>
 <div class="container">
 <div id="msg" class="alert"></div>
 
