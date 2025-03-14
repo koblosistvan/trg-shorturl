@@ -73,3 +73,19 @@ INSERT INTO `url` (`id`, `name`, `short_name`, `url`, `valid_from`, `valid_to`) 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+create view url_ordered as 
+select
+	*,
+    case
+    	when now() between valid_from and valid_to then 'aktív'
+    	when now() < valid_from then 'jövőbeli'
+    	when now() > valid_to then 'lejárt'
+    	else 'ismeretlen' end as status
+from
+	`url`
+order by 
+	case when now() between valid_from and valid_to then 0
+    when now() < valid_from then 1
+    when now() > valid_to then 2
+    else 100 end;

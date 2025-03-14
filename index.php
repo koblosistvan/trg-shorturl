@@ -1,13 +1,13 @@
-	<html lang="hu">
+<html lang="hu">
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<?php
 	include_once("connection.php");
-	//var_dump($_GET);
+#	var_dump($_GET);
 	if (isset($_GET['short_name'])) {
 		$sql = "SELECT * from url_ordered where short_name = '".$_GET['short_name']."' limit 1";
-
+#		var_dump($sql);
 		$res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
 		$data = mysqli_fetch_all($res, MYSQLI_ASSOC);
 		$url = $data[0]['url'];
@@ -55,6 +55,7 @@
 		}
 	} else {
 		$sql = "SELECT * from url order by short_name, valid_from desc";
+#		var_dump($sql);
 		$res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
 		$urls = mysqli_fetch_all($res, MYSQLI_ASSOC);
 
