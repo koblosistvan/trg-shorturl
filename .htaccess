@@ -1,5 +1,4 @@
 RewriteEngine on
 RewriteBase /
 
-
 RewriteRule ^link-(.+)$ /trg-shorturl/index.php?short_name=$1

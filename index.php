@@ -7,11 +7,17 @@
 	//var_dump($_GET);
 	if (isset($_GET['short_name'])) {
 		$sql = "SELECT * from url_ordered where short_name = '".$_GET['short_name']."' limit 1";
-		
 
 		$res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
-		$url = mysqli_fetch_all($res, MYSQLI_ASSOC);
-		echo '<meta http-equiv="refresh" content="0; url='.$url[0]['url'].'">';
+		$data = mysqli_fetch_all($res, MYSQLI_ASSOC);
+		$url = $data[0]['url'];
+		$status = $data[0]['status'];
+		$valid_from = $data[0]['valid_from'];
+		$valid_to = $data[0]['valid_to'];
+		if ($status == "aktív") {
+			echo '<meta http-equiv="refresh" content="0; url='.$url.'">';
+		}
+		
 	} else {
 		echo '<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>';
 		echo '<script type="text/javascript" src="js/jquery.bootgrid.min.js"></script>';
@@ -29,30 +35,33 @@
 </head>
 
 <body>
-<?php
-//		var_dump($url);
-?>
 <div class="container">
-<div id="msg" class="alert"></div>
+
 
 <?php
+	if (isset($_GET['short_name'])) {
+		if ($status == "jövőbeli") {
+			echo '<div class="status-msg">Sajnáljuk, ez a link még nem elérhető.<br>Kérjük, látogass vissza '.$valid_from.' után.</div>';
+			echo '<p>Vigasztalásnak itt egy állatos vers:</p>';
+			echo '<div id="poet791720"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=791720&async=1&kategoria=%C1llatok" async></script></div>';
+		} else if ($status == "lejárt") {
+			echo '<div class="status-msg">Sajnáljuk, ez a link '.$valid_to.' dátummal lejárt, már nem elérhető.</div>';
+			echo '<p>Vigasztalásnak itt egy természetvédelmi vers:</p>';
+			echo '<div id="poet215972"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=215972&async=1&kategoria=Term%E9szetv%E9delem" async></script></div>';
+		} else {
+			echo '<div class="status-msg">Sajnáljuk, ez a link nem működik.</div>';
+			echo '<p>Vigasztalásnak itt egy humoros vers:</p>';
+			echo '<div id="poet689335"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=689335&async=1&kategoria=Humor" async></script></div>';
+		}
+	} else {
+		$sql = "SELECT * from url order by short_name, valid_from desc";
+		$res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
+		$urls = mysqli_fetch_all($res, MYSQLI_ASSOC);
 
-
-
-$sql = "SELECT * FROM url";
-$res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
-
-$urls = mysqli_fetch_all($res, MYSQLI_ASSOC);
-//var_dump($urls);
-
-/**
- * duplikatok kezelese:
- * ha a linkbol van olyan, ami aktiv, akkor REDIRECTEL
- * kulonben ha a linkbol van olyan, ami aktiv lesz, azt irja ki hogy MEG NEM AKTIV
- * kulonben ha a linkbol csak olyan van, ami inaktiv, azt irja ki, hogy MAR NEM AKTIV
- */
-?>
 	
+?>
+
+<div id="msg" class="alert"></div>
 	<div class="container">
 		<div class="table-responsive">
 			<table id="grid" class="table table-condensed table-hover table-striped">
@@ -79,10 +88,13 @@ $urls = mysqli_fetch_all($res, MYSQLI_ASSOC);
 							?>
 							
 						</tr>
-					<?php endforeach;?>
+					<?php endforeach; ?>
 				</tbody>
 			</table>
 		</div>
 	</div>
+
+<?php } ?>
+</div>
 
 </html>
