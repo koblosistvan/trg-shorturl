@@ -1,0 +1,114 @@
+### Example Usage
+
+Here's how you might integrate this into your `index.php`:
+
+<?php
+session_start();
+
+if (isset($_SESSION['username'])) {
+    echo "Welcome, " . $_SESSION['username'] . "!";
+    // Display user-specific content
+} else {
+    echo "You are not logged in.";
+    // Redirect to login page or show login form
+}
+?>
+
+
+### Database Setup
+
+First, create a database table to store user information. Here's an example SQL query to create
+a `users` table:
+
+
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE
+);
+
+Registration: Create a registration form and handle the form submission to store user data securely.
+
+<?php
+// registration.php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['username'];
+    $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
+    $email = $_POST['email'];
+
+    // Database connection
+    $conn = new mysqli('localhost', 'root', '', 'your_database');
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Insert user data
+    $sql = "INSERT INTO users (username, password, email) VALUES ('$username', '$password', '$email')";
+    if ($conn->query($sql) === TRUE) {
+        echo "Registration successful!";
+    } else {
+        echo "Error: " . $sql . "<br>" . $conn->error;
+    }
+
+    $conn->close();
+}
+?>
+
+
+
+**Login**: Create a login form and handle the form submission to authenticate users.
+
+<?php
+// login.php
+session_start();
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Database connection
+    $conn = new mysqli('localhost', 'root', '', 'your_database');
+
+    // Check connection
+    if ($conn->connect_error) {
+        die("Connection failed: " . $conn->connect_error);
+    }
+
+    // Fetch user data
+    $sql = "SELECT * FROM users WHERE username='$username'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        if (password_verify($password, $row['password'])) {
+            $_SESSION['username'] = $username;
+            echo "Login successful!";
+        } else {
+            echo "Invalid password!";
+        }
+    } else {
+        echo "No user found!";
+    }
+
+    $conn->close();
+}
+?>
+
+
+3. **Logout**: Create a logout script to end the user session.
+
+
+<?php
+// logout.php
+session_start();
+session_destroy();
+echo "Logged out successfully!";
+?>
+
+
+To check if a user is logged in on your `index.php` page, you can use PHP sessions. Here's a 
+simple example:
+
