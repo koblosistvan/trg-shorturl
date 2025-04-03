@@ -28,3 +28,33 @@ td.stat-aktiv {
 td.stat-jovobeli {
     background-color: yellow;
 }
+
+body.hatter {
+    width: 100%;
+    height: 100%;
+    background: url("../img/background.jpeg") no-repeat center center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+
+#vers-div {
+    font-size: 26px;
+    color: black;
+    margin: 100px auto 80px auto;
+    width: 30%;
+    text-shadow: 2px 2px 3px rgba(0,0,0,0.6);
+
+    
+}
+
+.vers {
+    padding: 10px;
+    border-radius: 8px;
+    background-color: rgba(255,255,255,.5);
+}
+
+div.status-msg {
+    font-size: 30px;
+    color: whitesmoke;
+    font-weight: bold;
+}

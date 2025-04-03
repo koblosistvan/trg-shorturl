@@ -4,6 +4,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<?php
 	include_once("connection.php");
+	error_reporting(0);
 #	var_dump($_GET);
 	if (isset($_GET['short_name'])) {
 		$sql = "SELECT * from url_ordered where short_name = '".$_GET['short_name']."' limit 1";
@@ -22,15 +23,14 @@
 		echo '<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>';
 		echo '<script type="text/javascript" src="js/jquery.bootgrid.min.js"></script>';
 		echo '<script type="text/javascript" src="js/script.js"></script>';
-		echo '<link rel="stylesheet" type="text/css" href="css/jquery.bootgrid.min.css">';
-		echo '<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>';
-		echo '<link rel="stylesheet" type="text/css" href="css/main.css">';
-	
 	}
 	// ha nincsen valasz akkor handle
 	// duplikatok order by
 
 	?>
+	<link rel="stylesheet" type="text/css" href="css/jquery.bootgrid.min.css">
+	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+	<link rel="stylesheet" type="text/css" href="css/main.css">
 	<title>Trg Shorturl</title>
 </head>
 
@@ -40,19 +40,22 @@
 
 <?php
 	if (isset($_GET['short_name'])) {
+		echo '<div id="vers-div">';
 		if ($status == "jövőbeli") {
-			echo '<div class="status-msg">Sajnáljuk, ez a link még nem elérhető.<br>Kérjük, látogass vissza '.$valid_from.' után.</div>';
-			echo '<p>Vigasztalásnak itt egy állatos vers:</p>';
-			echo '<div id="poet791720"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=791720&async=1&kategoria=%C1llatok" async></script></div>';
+			echo '<div class="status-msg">Sajnáljuk, ez a link még nem elérhető.<br>Kérjük, látogass vissza '.$valid_from.' után.<br><br>';
+			echo 'Vigasztalásnak itt egy állatos vers:</div><br>';
+			echo '<div id="poet791720" class="vers"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=791720&async=1&kategoria=%C1llatok" async></script></div>';
 		} else if ($status == "lejárt") {
-			echo '<div class="status-msg">Sajnáljuk, ez a link '.$valid_to.' dátummal lejárt, már nem elérhető.</div>';
-			echo '<p>Vigasztalásnak itt egy természetvédelmi vers:</p>';
-			echo '<div id="poet215972"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=215972&async=1&kategoria=Term%E9szetv%E9delem" async></script></div>';
+			echo '<div class="status-msg">Sajnáljuk, ez a link '.$valid_to.' dátummal lejárt, már nem elérhető.<br><br>';
+			echo 'Vigasztalásnak itt egy természetvédelmi vers:</div><br>';
+			echo '<div id="poet215972" class="vers"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=215972&async=1&kategoria=Term%E9szetv%E9delem" async></script></div>';
 		} else {
-			echo '<div class="status-msg">Sajnáljuk, ez a link nem működik.</div>';
-			echo '<p>Vigasztalásnak itt egy humoros vers:</p>';
-			echo '<div id="poet689335"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=689335&async=1&kategoria=Humor" async></script></div>';
+			echo '<div class="status-msg">Sajnáljuk, ez a link nem működik.<br><br>';
+			echo 'Vigasztalásnak itt egy humoros vers:</div><br>';
+			echo '<div id="poet689335" class="vers"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=689335&async=1&kategoria=Humor" async></script></div>';
 		}
+		echo '<script>document.body.classList.add("hatter");</script>';
+		echo '</div>';
 	} else {
 		$sql = "SELECT * from url order by short_name, valid_from desc";
 #		var_dump($sql);
