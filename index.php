@@ -4,7 +4,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<?php
 	include_once("connection.php");
-	error_reporting(0);
+	#error_reporting(0);
 #	var_dump($_GET);
 	if (isset($_GET['short_name'])) {
 		$sql = "SELECT * from url_ordered where short_name = '".$_GET['short_name']."' limit 1";
@@ -23,9 +23,12 @@
 		echo '<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>';
 		echo '<script type="text/javascript" src="js/jquery.bootgrid.min.js"></script>';
 		echo '<script type="text/javascript" src="js/script.js"></script>';
+
+
 	}
-	// ha nincsen valasz akkor handle
-	// duplikatok order by
+	// css
+	// rekord hozzadas
+	// log
 
 	?>
 	<link rel="stylesheet" type="text/css" href="css/jquery.bootgrid.min.css">
@@ -39,6 +42,33 @@
 
 
 <?php
+	session_start();
+	// registration.php
+	if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    	$username = $_POST['username'];
+    	$password = $_POST['password'];#password_hash($_POST['password'], PASSWORD_BCRYPT);
+
+    // Database connection
+
+
+    // Insert user data
+    	$sql = "SELECT * from users where username = '".$username."' and password = '".$password."'";
+
+		$result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+            $_SESSION['username'] = $username;
+		}
+}
+
+
+	if (isset($_SESSION['username'])) {
+		echo "Welcome, " . $_SESSION['username'] . "!";
+		// Display user-specific content
+
+
+
+
 	if (isset($_GET['short_name'])) {
 		echo '<div id="vers-div">';
 		if ($status == "jövőbeli") {
@@ -98,7 +128,27 @@
 		</div>
 	</div>
 
-<?php } ?>
+<?php } 
+
+} else {
+	echo "You are not logged in.";
+	// Redirect to login page or show login form
+	?>	
+	<form action="index.php" method="post">
+
+  	<div class="container">
+    	<input type="text" placeholder="Felhasználónév" name="username" required>
+
+    	<input type="password" placeholder="Jelszó" name="password" required>
+
+    	<button type="submit">Belépés</button>
+  </div>
+</form>
+
+	<?php 
+}
+
+?>
 </div>
 
 </html>
