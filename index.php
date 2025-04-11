@@ -18,6 +18,11 @@
 		if ($status == "aktív") {
 			echo '<meta http-equiv="refresh" content="0; url='.$url.'">';
 		}
+		$sql = "INSERT into log VALUES ('".$_GET['short_name']."', '', '', '')";
+
+		$res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
+
+
 		
 	} else {
 		echo '<script type="text/javascript" src="js/jquery-1.11.1.min.js"></script>';
@@ -125,6 +130,21 @@
 					<?php endforeach; ?>
 				</tbody>
 			</table>
+			<form action="api/insert-link.php" method="post" id="new-record-form">
+				<input type="text" id="name" placeholder="Név..." onfocusout="validate_new();" class="form-text">
+				<span id="name-error"></span>
+				<input type="text" id="short_name" placeholder="Rövidítés..." onfocusout="validate_new();" class="form-text">
+				<span id="short_name-error"></span>
+				<input type="text" id="url" placeholder="Webcím..." onfocusout="validate_new();" class="form-text">
+				<span id="url-error"></span>
+				<input type="text" id="valid_from" placeholder="Érvényesség kezdete..." onfocusout="validate_new();" class="form-text">
+				<span id="valid_from-error"></span>
+				<input type="text" id="valid_to" placeholder="Érvényesség vége..." onfocusout="validate_new();" class="form-text">
+				<span id="valid_to-error"></span>
+
+				<input type="submit" value="Mentés" id="submit-new" disabled>
+
+			</form>
 		</div>
 	</div>
 

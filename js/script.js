@@ -86,3 +86,26 @@ function datecmp(tol,ig) {
 		return 'lejart';
 	}
 }
+
+
+function validate_new() {
+	error_ctr = 0
+	document.querySelectorAll("#new-record-form input.form-text").forEach((elem, i) => {
+		if (elem.value == "") {
+			document.getElementById(elem.id + '-error').innerHTML = 'Érvénytelen';
+			
+			error_ctr += 1
+
+		} else {
+			document.getElementById(elem.id + '-error').innerHTML = "";
+		}
+	});
+
+	if (error_ctr) {
+		document.getElementById('submit-new').disabled = true
+	} else {
+		document.getElementById('submit-new').disabled = false
+	}
+
+
+}

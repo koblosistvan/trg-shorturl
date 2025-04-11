@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Gép: 127.0.0.1
--- Létrehozás ideje: 2025. Ápr 04. 07:44
+-- Létrehozás ideje: 2025. Ápr 11. 07:45
 -- Kiszolgáló verziója: 10.4.32-MariaDB
 -- PHP verzió: 8.2.12
 
@@ -28,11 +28,18 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `log` (
-  `url_id` int(11) DEFAULT NULL,
+  `short_name` varchar(255) NOT NULL,
   `time` datetime DEFAULT NULL,
   `ip` varchar(15) DEFAULT NULL,
   `agent` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
+
+--
+-- A tábla adatainak kiíratása `log`
+--
+
+INSERT INTO `log` (`short_name`, `time`, `ip`, `agent`) VALUES
+('kepes', '0000-00-00 00:00:00', '', '');
 
 -- --------------------------------------------------------
 
@@ -58,7 +65,13 @@ INSERT INTO `url` (`id`, `name`, `short_name`, `url`, `valid_from`, `valid_to`) 
 (2, 'pigai_peter_pigusz', 'pigusz', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '2025-02-22', '2025-02-27'),
 (3, 'kepes_botond', 'kepes', 'https://www.w3schools.com/sql/sql_insert.asp', '2025-03-20', '2025-04-21'),
 (4, 'kepes_botond', 'kepes', 'https://oltonyborze.tata-refi.hu/', '2025-03-12', '2025-03-20'),
-(5, 'kepes_botond', 'kepes', 'calculator://', '2019-02-01', '2019-02-02');
+(5, 'kepes_botond', 'kepes', 'calculator://', '2019-02-01', '2019-02-02'),
+(6, '', '', '', '0000-00-00', '0000-00-00'),
+(7, '', '', '', '0000-00-00', '0000-00-00'),
+(8, '', '', '', '0000-00-00', '0000-00-00'),
+(9, '', '', '', '0000-00-00', '0000-00-00'),
+(10, '', '', '', '0000-00-00', '0000-00-00'),
+(11, '', '', '', '0000-00-00', '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -131,7 +144,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT a táblához `url`
 --
 ALTER TABLE `url`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT a táblához `users`
