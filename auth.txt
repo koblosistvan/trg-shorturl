@@ -111,4 +111,4 @@ echo "Logged out successfully!";
 
 To check if a user is logged in on your `index.php` page, you can use PHP sessions. Here's a 
 simple example:
-
+1
