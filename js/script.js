@@ -1,6 +1,6 @@
 $(document).ready(function() {
 	$('td.edit-data').blur(function(){updateField(this);});
-
+/* 
 	$('tr.edit-field').each(function() {
 
 		res = datecmp($(this).find('.tol').text(), $(this).find('.ig').text());
@@ -15,7 +15,7 @@ $(document).ready(function() {
 			col.text('Lejárt');
 		}
 		
-	});
+	}); */
 });
 
 const DT = new Date();
@@ -41,12 +41,13 @@ function updateField(elem) {
 		dataType: "json",
 		success: function(response) {
 			if (response.status) {
-				$('#msg').removeClass('alertDanger');
-				$('#msg').addClass('alertSuccess').html(response.msg);
+				$('#msg').removeClass('alert-danger');
+				$('#msg').addClass('alert-success').html(response.msg);
 			} else {
-				$('#msg').removeClass('alertSuccess');
-				$('#msg').addClass('alertDanger').html(response.msg);
+				$('#msg').removeClass('alert-success');
+				$('#msg').addClass('alert-danger').html(response.msg);
 			}
+			setTimeout(function() { $('#msg').fadeOut(); }, 2000);
 		}
 	} );
 

@@ -28,18 +28,13 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `log` (
+  `url_id` int(11) NOT NULL,
   `short_name` varchar(255) NOT NULL,
-  `time` datetime DEFAULT NULL,
+  `time` datetime DEFAULT CURRENT_TIMESTAMP(),
+  `action` varchar(255) NOT NULL,
   `ip` varchar(15) DEFAULT NULL,
   `agent` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_hungarian_ci;
-
---
--- A tábla adatainak kiíratása `log`
---
-
-INSERT INTO `log` (`short_name`, `time`, `ip`, `agent`) VALUES
-('kepes', '0000-00-00 00:00:00', '', '');
 
 -- --------------------------------------------------------
 
@@ -61,33 +56,11 @@ CREATE TABLE `url` (
 --
 
 INSERT INTO `url` (`id`, `name`, `short_name`, `url`, `valid_from`, `valid_to`) VALUES
-(1, 'teszt', 'test23', 'https://youtu.be/J3cg4tFLm7A', '2021-03-14', '2071-07-01'),
-(2, 'pigai_peter_pigusz', 'pigusz', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ', '2025-02-22', '2025-02-27'),
-(3, 'kepes_botond', 'kepes', 'https://www.w3schools.com/sql/sql_insert.asp', '2025-03-20', '2025-04-21'),
-(4, 'kepes_botond', 'kepes', 'https://oltonyborze.tata-refi.hu/', '2025-03-12', '2025-03-20'),
-(5, 'kepes_botond', 'kepes', 'calculator://', '2019-02-01', '2019-02-02'),
-(6, '', '', '', '0000-00-00', '0000-00-00'),
-(7, '', '', '', '0000-00-00', '0000-00-00'),
-(8, '', '', '', '0000-00-00', '0000-00-00'),
-(9, '', '', '', '0000-00-00', '0000-00-00'),
-(10, '', '', '', '0000-00-00', '0000-00-00'),
-(11, '', '', '', '0000-00-00', '0000-00-00');
-
--- --------------------------------------------------------
-
---
--- A nézet helyettes szerkezete `url_ordered`
--- (Lásd alább az aktuális nézetet)
---
-CREATE TABLE `url_ordered` (
-`id` int(11)
-,`name` varchar(255)
-,`short_name` varchar(255)
-,`url` varchar(255)
-,`valid_from` date
-,`valid_to` date
-,`status` varchar(10)
-);
+(1, 'Tanári órarend', 'orarend-ta', 'https://refi-tata.hu/hivatalos/orarend_2425_ta.pdf', '2024-08-01', '2025-09-01'),
+(2, 'Osztály órarend', 'orarend-o', 'https://refi-tata.hu/hivatalos/orarend_2425_o.pdf', '2024-08-01', '2025-09-01'),
+(3, 'Verseny felügyelet', 'verseny', 'https://refi-tata.hu/hivatalos/verseny_f_2024_25_1.pdf', '2024-10-01', '2025-05-31'),
+(4, 'Mérések beosztása', 'meres', 'https://refi-tata.hu/hivatalos/terembeosz_meres.pdf', '2026-03-01', '2026-05-31'),
+(5, 'Heti hírlevél', 'hirlevel', 'https://refi-tata.hu/Hirlevel/Hetfoi_hirlevel_2025_06_23.pdf', '2025-06-23', '9999-12-31');
 
 -- --------------------------------------------------------
 
@@ -114,9 +87,36 @@ INSERT INTO `users` (`id`, `username`, `password`, `email`) VALUES
 --
 -- Nézet szerkezete `url_ordered`
 --
-DROP TABLE IF EXISTS `url_ordered`;
-
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `url_ordered`  AS SELECT `url`.`id` AS `id`, `url`.`name` AS `name`, `url`.`short_name` AS `short_name`, `url`.`url` AS `url`, `url`.`valid_from` AS `valid_from`, `url`.`valid_to` AS `valid_to`, CASE WHEN current_timestamp() between `url`.`valid_from` and `url`.`valid_to` THEN 'aktív' WHEN current_timestamp() > `url`.`valid_to` THEN 'lejárt' WHEN current_timestamp() < `url`.`valid_from` THEN 'jövőbeli' ELSE 'ismeretlen' END AS `status` FROM `url` ORDER BY CASE WHEN current_timestamp() between `url`.`valid_from` and `url`.`valid_to` THEN 0 WHEN current_timestamp() > `url`.`valid_to` THEN 2 WHEN current_timestamp() < `url`.`valid_from` THEN 1 ELSE 100 END ASC ;
+CREATE VIEW `url_ordered` AS 
+SELECT 
+  `url`.`id` AS `id`, 
+  `url`.`name` AS `name`, 
+  `url`.`short_name` AS `short_name`,
+  `url`.`url` AS `url`, 
+  `url`.`valid_from` AS `valid_from`, 
+  `url`.`valid_to` AS `valid_to`, 
+  CASE 
+    WHEN current_timestamp() between `url`.`valid_from` and `url`.`valid_to` THEN 'aktív' 
+    WHEN current_timestamp() > `url`.`valid_to` THEN 'lejárt' 
+    WHEN current_timestamp() < `url`.`valid_from` THEN 'jövőbeli' 
+    ELSE 'ismeretlen' 
+  END AS `status`, 
+  CASE 
+    WHEN current_timestamp() between `url`.`valid_from` and `url`.`valid_to` THEN 'stat-active' 
+    WHEN current_timestamp() > `url`.`valid_to` THEN 'stat-past' 
+    WHEN current_timestamp() < `url`.`valid_from` THEN 'stat-future' 
+    ELSE 'stat-unknown'
+  END AS `status-class`, 
+  (select count(*) from `log` where `log`.`url_id` = `url`.`id`) AS `hits`,
+  (select count(*) from `log` where `log`.`url_id` = `url`.`id` and `log`.`time` >= DATE_SUB(current_date(), INTERVAL 7 DAY)) AS `hits_last_week`
+FROM `url` 
+ORDER BY 
+  CASE 
+    WHEN current_timestamp() between `url`.`valid_from` and `url`.`valid_to` THEN 0 
+    WHEN current_timestamp() > `url`.`valid_to` THEN 2 
+    WHEN current_timestamp() < `url`.`valid_from` THEN 1 
+    ELSE 100 
+  END ASC ;
 
 --
 -- Indexek a kiírt táblákhoz
