@@ -1,5 +1,7 @@
 <?php
 	include_once("connection.php");
+	mb_internal_encoding("UTF-8");
+	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['username']) && isset($_POST['password'])) {
 		$action = 'login';
 	} else if (isset($_GET['short_name'])) {
@@ -9,6 +11,7 @@
 		$shorturl = mysqli_fetch_all($res, MYSQLI_ASSOC);
 		if (count($shorturl) == 0) {
 			$action = "invalid";
+			$sql = "INSERT into log VALUES (0, '".$_GET['short_name']."', CURRENT_TIMESTAMP(), '".$action."', '".$_SERVER["REMOTE_ADDR"]."', '".$_SERVER["HTTP_USER_AGENT"]."')";
 		} else {
 			$shorturl = $shorturl[0]; // Get the first element since we used limit 1
 			if ($shorturl['status'] == "aktív") {
@@ -16,12 +19,16 @@
 			} else {
 				$action = "inactive";
 			}
+			$sql = "INSERT into log VALUES (".$shorturl['id'].", '".$_GET['short_name']."', CURRENT_TIMESTAMP(), '".$action."', '".$_SERVER["REMOTE_ADDR"]."', '".$_SERVER["HTTP_USER_AGENT"]."')";
 		}
+		$res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
 	} else {
 		$action = "no-short-name";
 	}
-	$sql = "INSERT into log VALUES (".$shorturl['id'].", '".$_GET['short_name']."', CURRENT_TIMESTAMP(), '".$action."', '".$_SERVER["REMOTE_ADDR"]."', '".$_SERVER["HTTP_USER_AGENT"]."')";
-	$res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
+
+	if (isset($_GET['reset'])) {
+		$action = "reset-password";
+	}
 ?>
 
 <!DOCTYPE html>
@@ -52,15 +59,24 @@
 		if ($action == 'login') {
 			// Handle user login
 			$username = $_POST['username'];
-			$password = $_POST['password']; #password_hash($_POST['password'], PASSWORD_BCRYPT);
-			$sql = "SELECT * from users where username = '" . $username . "' and password = '" . $password . "'";
-			$result = $conn->query($sql);
-
-			if ($result->num_rows > 0) {
-				$_SESSION['username'] = $username;
+			$password = password_hash($_POST['password'], PASSWORD_BCRYPT, ["cost" => 12]);
+			$sql = "SELECT * from users where username = '".$username."'";
+			$res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
+			$user = mysqli_fetch_all($res, MYSQLI_ASSOC);
+			if (count($user) == 0) {
+				echo '<div class="alert alert-danger">Hibás felhasználónév vagy jelszó!</div>';
+				$action = 'no-short-name';
+			} else {
+				$user = $user[0];
+				if (!password_verify($_POST['password'], $user['password'])) {
+					echo '<div class="alert alert-danger">Hibás felhasználónév vagy jelszó!</div>';
+					$action = 'no-short-name';
+				} else {
+					$_SESSION['username'] = $username;
+				}
 			}
 		}
-
+		
 		if ($action == 'inactive' || $action == 'invalid') {
 			echo '<div id="vers-div">';
 			if ($action == 'inactive' && $shorturl['status'] == "jövőbeli") { ?>
@@ -81,7 +97,7 @@
 				<div id="poet689335" class="vers"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=689335&async=1&kategoria=Humor" async></script></div>
 			<?php }
 			echo '</div>';
-		} else if ($action == 'no-short-name' && isset($_SESSION['username'])) {
+		} else if (($action == 'no-short-name' || $action == 'login') && isset($_SESSION['username'])) {
 			// User is logged in, display the main content
 			echo '<div id="user-info">Belépve: '.$_SESSION['username'].'</div>';
 
@@ -150,7 +166,7 @@
 			</div>
 			<?php } else if ($action == 'no-short-name') { ?>
 				<h1>Kérem, adjon meg egy rövid URL-t, vagy jelentkezzen be!</h1>
-				<form action="index.php" method="post">
+				<form action="" method="post">
 					<div class="container">
 						<input type="text" placeholder="Felhasználónév" name="username" required>
 						<input type="password" placeholder="Jelszó" name="password" required>

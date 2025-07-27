@@ -56,11 +56,11 @@ CREATE TABLE `url` (
 --
 
 INSERT INTO `url` (`id`, `name`, `short_name`, `url`, `valid_from`, `valid_to`) VALUES
-(1, 'Tanári órarend', 'orarend-ta', 'https://refi-tata.hu/hivatalos/orarend_2425_ta.pdf', '2024-08-01', '2025-09-01'),
-(2, 'Osztály órarend', 'orarend-o', 'https://refi-tata.hu/hivatalos/orarend_2425_o.pdf', '2024-08-01', '2025-09-01'),
-(3, 'Verseny felügyelet', 'verseny', 'https://refi-tata.hu/hivatalos/verseny_f_2024_25_1.pdf', '2024-10-01', '2025-05-31'),
-(4, 'Mérések beosztása', 'meres', 'https://refi-tata.hu/hivatalos/terembeosz_meres.pdf', '2026-03-01', '2026-05-31'),
-(5, 'Heti hírlevél', 'hirlevel', 'https://refi-tata.hu/Hirlevel/Hetfoi_hirlevel_2025_06_23.pdf', '2025-06-23', '9999-12-31');
+(1, 'Tanári órarend', 'orarend-ta', 'https://tata-refi.hu/hivatalos/orarend_2425_ta.pdf', '2024-08-01', '2025-09-01'),
+(2, 'Osztály órarend', 'orarend-o', 'https://tata-refi.hu/hivatalos/orarend_2425_o.pdf', '2024-08-01', '2025-09-01'),
+(3, 'Verseny felügyelet', 'verseny', 'https://tata-refi.hu/hivatalos/verseny_f_2024_25_1.pdf', '2024-10-01', '2025-05-31'),
+(4, 'Mérések beosztása', 'meres', 'https://tata-refi.hu/hivatalos/terembeosz_meres.pdf', '2026-03-01', '2026-05-31'),
+(5, 'Heti hírlevél', 'hirlevel', 'https://tata-refi.hu/Hirlevel/Hetfoi_hirlevel_2025_06_23.pdf', '2025-06-23', '9999-12-31');
 
 -- --------------------------------------------------------
 
@@ -80,7 +80,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `username`, `password`, `email`) VALUES
-(1, 'marci', 'a', '');
+(1, 'zsofi', '$2a$12$XDFTz/g/gVuaebNQNPWvX.0jYme7Qj3gyz/ECWDIbMLMLV19ubSku', 'geiszelhardt.zsofia@tata-refi.hu'), -- TRG-zsofi!
+(2, 'batida', '$2a$12$.bE5Veusu.YrL42zgVRUcOX3bgvhztHOm32tmcAWQ9JApLHHEdQlO', 'koblos.istvan@tata-refi.hu');
 
 -- --------------------------------------------------------
 

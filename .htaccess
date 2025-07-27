@@ -4,4 +4,4 @@ RewriteEngine on
 # RewriteRule ^$ /trg-shorturl/index.php [L]
 
 # Redirect /<any_short_name> to /index.php?short_name=<any_short_name> within the trg_short directory
-RewriteRule ^([a-z]+)$ /trg-shorturl/index.php?short_name=$1 [L]
+RewriteRule ^([a-zA-Z\-_]+)$ /trg-shorturl/index.php?short_name=$1 [L]
