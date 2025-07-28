@@ -4,6 +4,11 @@
 	
 	if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['username']) && isset($_POST['password'])) {
 		$action = 'login';
+	} else if (isset($_GET['logout'])) {
+		// if the user is logged in, we will log them out
+		session_start();
+		session_destroy();
+		$action = "no-short-name";
 	} else if (isset($_GET['short_name'])) {
 		// if the short name is set, we will redirect to the original URL
 		$sql = "SELECT * from url_ordered where short_name = '" . $_GET['short_name'] . "' limit 1";
@@ -83,23 +88,23 @@
 				<h1>Sajnáljuk, ez a link még nem elérhető.</h1>
 				<h1>Kérjük, látogass vissza <?php echo $shorturl['valid_from'] ?> után.</h1>
 				<hr>
-				<h2>Vigasztalásnak itt egy állatos vers:</h2>
+				<h2>Vigasztalásnak itt egy vers:</h2>
 				<div id="poet791720" class="vers"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=791720&async=1&kategoria=%C1llatok" async></script></div>
 			<?php } else if ($action == 'inactive' && $shorturl['status'] == "lejárt") { ?>
 				<h1>Sajnáljuk, ez a link <?php echo $shorturl['valid_to'] ?> dátummal lejárt, már nem elérhető.</h1>
 				<hr>
-				<h2>Vigasztalásnak itt egy természetvédelmi vers:</h2>
+				<h2>Vigasztalásnak itt egy vers:</h2>
 				<div id="poet215972" class="vers"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=215972&async=1&kategoria=Term%E9szetv%E9delem" async></script></div>
 			<?php } else { ?>
 				<h1>Sajnáljuk, ez a link nem működik.</h1>
 				<hr>
-				<h2>Vigasztalásnak itt egy humoros vers:</h2>
+				<h2>Vigasztalásnak itt egy vers:</h2>
 				<div id="poet689335" class="vers"><script language="JavaScript" type="text/JavaScript" src="https://www.poet.hu/js.php?r=689335&async=1&kategoria=Humor" async></script></div>
 			<?php }
 			echo '</div>';
 		} else if (($action == 'no-short-name' || $action == 'login') && isset($_SESSION['username'])) {
 			// User is logged in, display the main content
-			echo '<div id="user-info">Belépve: '.$_SESSION['username'].'</div>';
+			echo '<div id="user-info">Belépve: '.$_SESSION['username'].' <a href="?logout"><i class="bi bi-box-arrow-right"></i></a></div>';
 
 			$sql = "SELECT * from url_ordered";
 			$res = mysqli_query($conn, $sql) or die("hiba az adatbázis elérésekor");
@@ -131,7 +136,7 @@
 							<?php foreach ($urls as $u) : ?>
 								<tr class="edit-field" id="data-row-<?php echo $u['id']; ?>" data-row-id="<?php echo $u['id']; ?>">
 									<?php
-									echo '<td><a href="'.$u['short_name'].'" target="_blank"><i class="bi bi-link-45deg"></i></a></td>';
+									echo '<td><i class="bi bi-link-45deg url-go"></i> <i class="bi bi-copy url-copy"></i></td>';
 									echo '<td class="edit-data" contenteditable="true" col="name">'.$u['name'].'</td>';
 									echo '<td class="edit-data" contenteditable="true" col="short_name">'.$u['short_name'].'</td>';
 									echo '<td class="edit-data" contenteditable="true" col="url">'.$u['url'].'</td>';

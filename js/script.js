@@ -1,22 +1,32 @@
 $(document).ready(function() {
 	$('td.edit-data').blur(function(){updateField(this);});
-/* 
-	$('tr.edit-field').each(function() {
 
-		res = datecmp($(this).find('.tol').text(), $(this).find('.ig').text());
-		
-		col = $(this).find('[col="status"]');
-		col.addClass('stat-'+res);
-		if (res == 'aktiv') {
-			col.text('Aktív');
-		} else if (res == 'jovobeli') {
-			col.text('Jövőbeli');
-		} else {
-			col.text('Lejárt');
+	$('i.url-go').css('cursor', 'pointer');
+	$('i.url-go').on('click', function() {
+		const url = window.location.href + $(this).closest('tr').find('[col="short_name"]').text();
+		if (url) {
+			window.open(url, '_blank');
 		}
-		
-	}); */
+	});
+
+	$('i.url-copy').css('cursor', 'pointer');
+	$('i.url-copy').on('click', function() {
+		const url = window.location.href + $(this).closest('tr').find('[col="short_name"]').text();
+		if (url) {
+			navigator.clipboard.writeText(url);
+			msg('Vágólapra másolva: ' + url, 'success');
+		} else {
+			msg('A másolás nem sikerült.', 'danger');
+		}
+	});
 });
+
+function msg(msg, type) {
+	$('#msg').removeClass('alert-danger alert-success');
+	$('#msg').addClass('alert-' + type).html(msg);
+	$('#msg').fadeIn();
+	setTimeout(function() { $('#msg').fadeOut(); }, 2000);
+}	
 
 const DT = new Date();
 
@@ -41,13 +51,10 @@ function updateField(elem) {
 		dataType: "json",
 		success: function(response) {
 			if (response.status) {
-				$('#msg').removeClass('alert-danger');
-				$('#msg').addClass('alert-success').html(response.msg);
+				msg(response.msg, 'success');
 			} else {
-				$('#msg').removeClass('alert-success');
-				$('#msg').addClass('alert-danger').html(response.msg);
+				msg(response.msg, 'danger');
 			}
-			setTimeout(function() { $('#msg').fadeOut(); }, 2000);
 		}
 	} );
 
@@ -73,7 +80,7 @@ function updateField(elem) {
 	*/
 }
 
-function datecmp(tol,ig) {
+/* function datecmp(tol,ig) {
 	t = (new Date(DT.toISOString().split('T')[0])).setHours(0); // alapvetoen 1AM-re allitja be
 
 	tol = new Date(tol);
@@ -87,7 +94,7 @@ function datecmp(tol,ig) {
 		return 'lejart';
 	}
 }
-
+ */
 
 function validate_new() {
 	error_ctr = 0
